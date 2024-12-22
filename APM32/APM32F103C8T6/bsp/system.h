@@ -94,8 +94,8 @@ extern "C" {
 #define LOG_GPIO_CLK               RCM_APB2_PERIPH_GPIOA
 void log_init(u32 baud);
 #else
-#define _LOG(format, ...)
-#define _LOG_INIT(band)
+#define LOG(format, ...)
+#define LOG_INIT(band)
 #endif // (LOG_ON != 0)
 
 

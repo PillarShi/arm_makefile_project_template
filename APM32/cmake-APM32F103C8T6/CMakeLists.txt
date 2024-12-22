@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CMAKE_BUILD_TYPE MinSizeRel)
+# set(CMAKE_BUILD_TYPE MinSizeRel)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CMAKE_CXX_STANDARD  17)
 set(CMAKE_C_STANDARD    99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 project(temp
         VERSION 0.0.1
@@ -39,10 +41,15 @@ file(GLOB_RECURSE C_SRC
 	app/led/led.c
 )
 
-#################################### GCC #####################################
 set(ASM_SRC lib/startup/my_startup_apm32f10x_md.S)
+
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/lib/startup/my_gcc_APM32F10xx6.ld)
 
+################################ DO NOT CHANGE ###############################
+set(TARGET ${ELF_FILE})
+add_executable(${TARGET} ${C_SRC} ${ASM_SRC})
+
+#----------------------------------- GCC -------------------------------------
 set(CC_PREFIX arm-none-eabi-)
 set(CMAKE_C_COMPILER    ${CC_PREFIX}gcc)
 set(CMAKE_ASM_COMPILER  ${CC_PREFIX}gcc)
@@ -51,6 +58,13 @@ set(CMAKE_AR            ${CC_PREFIX}ar)
 set(CMAKE_OBJCOPY       ${CC_PREFIX}objcopy)
 set(CMAKE_OBJDUMP       ${CC_PREFIX}objdump)
 set(CMAKE_SIZE          ${CC_PREFIX}size)
+
+add_custom_command(TARGET ${TARGET} POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -Oihex ${TARGET} ${HEX_FILE}
+    COMMAND ${CMAKE_OBJCOPY} -Obinary ${TARGET} ${BIN_FILE}
+    COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${TARGET} > ${DIS_FILE}
+    COMMAND ${CMAKE_SIZE} ${TARGET}
+    )
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     message(STATUS "Maximum optimization for speed")
@@ -69,7 +83,7 @@ else ()
 endif ()
 
 set(COMMON_FLAGS
-    -mthumb -mcpu=cortex-m3
+    -mthumb -mthumb-interwork -mcpu=cortex-m3
     -mfloat-abi=soft
     -ffunction-sections -fdata-sections
     -fno-common
@@ -82,7 +96,7 @@ set(C_FLAGS
 
 set(ASM_FLAGS
     ${COMMON_FLAGS} ${BUILD_FLAGS}
-    -x assembler-with-cpp
+    -x assembler-with-cpp -Wa,-mimplicit-it=thumb
     )
 
 set(CXX_FLAGS
@@ -97,20 +111,12 @@ set(LD_FLAGS
     -Wl,--gc-sections,-cref,-Map=${MAP_FILE}
     -T${LINKER_SCRIPT}
     )
+#-----------------------------------------------------------------------------
 
+target_compile_definitions(${TARGET} PRIVATE ${DEFINES})
+target_include_directories(${TARGET} PRIVATE ${INC_DIR})
+target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:C>:${C_FLAGS}>)
+target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:ASM>:${ASM_FLAGS}>)
+target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CXX_FLAGS}>)
+target_link_options(${TARGET} PRIVATE ${LD_FLAGS})
 ##############################################################################
-
-add_executable(${ELF_FILE} ${C_SRC} ${ASM_SRC})
-target_compile_definitions(${ELF_FILE} PRIVATE ${DEFINES})
-target_include_directories(${ELF_FILE} PRIVATE ${INC_DIR})
-target_compile_options(${ELF_FILE} PRIVATE $<$<COMPILE_LANGUAGE:C>:${C_FLAGS}>)
-target_compile_options(${ELF_FILE} PRIVATE $<$<COMPILE_LANGUAGE:ASM>:${ASM_FLAGS}>)
-target_compile_options(${ELF_FILE} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CXX_FLAGS}>)
-target_link_options(${ELF_FILE} PRIVATE ${LD_FLAGS})
-
-add_custom_command(TARGET ${ELF_FILE} POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -Oihex ${ELF_FILE} ${HEX_FILE}
-    COMMAND ${CMAKE_OBJCOPY} -Obinary ${ELF_FILE} ${BIN_FILE}
-    COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${ELF_FILE} > ${DIS_FILE}
-    COMMAND ${CMAKE_SIZE} ${ELF_FILE}
-    )
