@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-# set(CMAKE_BUILD_TYPE MinSizeRel)
+set(CMAKE_BUILD_TYPE MinSizeRel)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
@@ -24,30 +24,24 @@ set(DEFINES
     )
 
 set(INC_DIR 
-    app
-    app/led
     bsp
-    lib/CMSIS
-    lib/driver/inc
     )
 
-file(GLOB_RECURSE C_SRC
-    lib/driver/src/apm32f10x_rcm.c
-	lib/driver/src/apm32f10x_gpio.c
-	lib/driver/src/apm32f10x_usart.c
-	lib/driver/src/apm32f10x_dma.c
-	lib/driver/src/apm32f10x_misc.c
-	bsp/*.c
-	app/led/led.c
+set(SRC
+    bsp/main.c
+    bsp/system.c
+    bsp/apm32f10x_int.c
+    bsp/system_apm32f10x.c
 )
 
-set(ASM_SRC lib/startup/my_startup_apm32f10x_md.S)
+set(SUB_DIRS lib app)
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/lib/startup/my_gcc_APM32F10xx6.ld)
 
 ################################ DO NOT CHANGE ###############################
+
 set(TARGET ${ELF_FILE})
-add_executable(${TARGET} ${C_SRC} ${ASM_SRC})
+add_executable(${TARGET} ${SRC})
 
 #----------------------------------- GCC -------------------------------------
 set(CC_PREFIX arm-none-eabi-)
@@ -112,6 +106,11 @@ set(LD_FLAGS
     -T${LINKER_SCRIPT}
     )
 #-----------------------------------------------------------------------------
+
+foreach(SUB_DIR ${SUB_DIRS})
+    add_subdirectory(${SUB_DIR})
+endforeach()
+target_link_libraries(${TARGET} PRIVATE ${SUB_DIRS})
 
 target_compile_definitions(${TARGET} PRIVATE ${DEFINES})
 target_include_directories(${TARGET} PRIVATE ${INC_DIR})
