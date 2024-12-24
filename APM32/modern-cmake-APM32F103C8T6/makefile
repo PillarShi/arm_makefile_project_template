@@ -1,5 +1,5 @@
 RUN_TARGET := temp
-SRC_DIR := . 
+SRC_DIR := .
 BUILD_DIR := build
 
 IS_NINJA := y

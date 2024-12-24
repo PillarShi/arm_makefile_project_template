@@ -1,6 +1,8 @@
 set(TARGET lib)
 
-SET(SRC 
+SET(SRC
+    system.c
+    system_apm32f10x.c
     driver/src/apm32f10x_rcm.c
     driver/src/apm32f10x_gpio.c
     driver/src/apm32f10x_usart.c
@@ -10,7 +12,6 @@ SET(SRC
     )
 
 set(INC_DIR
-    ../${INC_DIR}
     .
     CMSIS
     driver/inc
@@ -24,7 +25,7 @@ set(DEFINES
     )
 
 ################################ DO NOT CHANGE ###############################
-add_library(${TARGET} ${SRC})
+add_library(${TARGET} OBJECT ${SRC})
 
 target_include_directories(${TARGET} PUBLIC ${INC_DIR})
 
