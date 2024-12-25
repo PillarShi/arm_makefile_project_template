@@ -18,7 +18,7 @@ set(DEFINES
     )
 
 ################################ DO NOT CHANGE ###############################
-add_library(${TARGET} ${SRC})
+add_library(${TARGET} OBJECT ${SRC})
 
 target_include_directories(${TARGET} PUBLIC ${INC_DIR})
 
