@@ -23,7 +23,7 @@ set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/lib/startup/my_gcc_APM32F10xx6.ld)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
+set(TARGET ${ELF_FILE})
 #----------------------------------- GCC -------------------------------------
 set(CC_PREFIX arm-none-eabi-)
 set(CMAKE_C_COMPILER    ${CC_PREFIX}gcc)
@@ -34,12 +34,12 @@ set(CMAKE_OBJCOPY       ${CC_PREFIX}objcopy)
 set(CMAKE_OBJDUMP       ${CC_PREFIX}objdump)
 set(CMAKE_SIZE          ${CC_PREFIX}size)
 
-# add_custom_command(TARGET ${TARGET} POST_BUILD
-#     COMMAND ${CMAKE_OBJCOPY} -Oihex ${TARGET} ${HEX_FILE}
-#     COMMAND ${CMAKE_OBJCOPY} -Obinary ${TARGET} ${BIN_FILE}
-#     COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${TARGET} > ${DIS_FILE}
-#     COMMAND ${CMAKE_SIZE} ${TARGET}
-#     )
+add_custom_target(RUN_POST_BUILD ALL
+    COMMAND ${CMAKE_OBJCOPY} -Oihex ${TARGET} ${HEX_FILE}
+    COMMAND ${CMAKE_OBJCOPY} -Obinary ${TARGET} ${BIN_FILE}
+    COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${TARGET} > ${DIS_FILE}
+    COMMAND ${CMAKE_SIZE} ${TARGET}
+    )
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     message(STATUS "Maximum optimization for speed")
@@ -87,8 +87,5 @@ set(LD_FLAGS
     -T${LINKER_SCRIPT}
     )
 #-----------------------------------------------------------------------------
-
-set(TARGET ${ELF_FILE})
 add_subdirectory(bsp)
-
 ##############################################################################

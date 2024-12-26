@@ -23,14 +23,7 @@ set(SUB_DIRS lib app)
 
 add_executable(${TARGET} ${SRC})
 
-#----------------------------------- GCC -------------------------------------
-add_custom_command(TARGET ${TARGET} POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -Oihex ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${HEX_FILE}
-    COMMAND ${CMAKE_OBJCOPY} -Obinary ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BIN_FILE}
-    COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET} > ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${DIS_FILE}
-    COMMAND ${CMAKE_SIZE} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}
-    )
-#-----------------------------------------------------------------------------
+add_dependencies(RUN_POST_BUILD ${TARGET})
 
 foreach(SUB_DIR ${SUB_DIRS})
     add_subdirectory(../${SUB_DIR} ../${SUB_DIR})
