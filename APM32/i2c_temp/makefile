@@ -174,7 +174,7 @@ $(BUILD):
 	@mkdir $@
 ################################ 烧录规则 #####################################
 NAME := apm32f103c8
-PACK := pack/Geehy.APM32F1xx_DFP.1.1.0.pack
+PACK := ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack
 # BASE_ADDR := 0x08000000
 
 .PHONY: pack burn erase

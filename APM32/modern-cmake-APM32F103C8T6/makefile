@@ -49,7 +49,7 @@ run_end :
 	@echo "----------------------------------------------------------------------------"
 
 burn :
-	@pyocd flash build/temp.elf -t apm32f103c8 --pack pack/Geehy.APM32F1xx_DFP.1.1.0.pack
+	@pyocd flash build/temp.elf -t apm32f103c8 --pack ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack
 
 erase :
-	@pyocd erase -t apm32f103c8 --chip --pack pack/Geehy.APM32F1xx_DFP.1.1.0.pack
+	@pyocd erase -t apm32f103c8 --chip --pack ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack

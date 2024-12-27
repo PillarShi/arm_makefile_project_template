@@ -174,7 +174,7 @@ $(BUILD):
 	@mkdir $@
 ################################ 烧录规则 #####################################
 NAME := air001
-PACK := pack/Keil.AIR001_DFP.1.1.2.pack
+PACK := ../pack/Keil.AIR001_DFP.1.1.2.pack
 # BASE_ADDR := 0x08000000
 
 .PHONY: pack burn erase

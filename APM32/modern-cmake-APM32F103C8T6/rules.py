@@ -1,6 +1,6 @@
 import os,sys,shutil
 
-RUN_TARGET = "temp"
+RUN_TARGET = "morden_cmake_project.elf"
 SRC_DIR = "."
 BUILD_DIR = "build"
 
@@ -46,11 +46,11 @@ def run_end():
 rules["run_end"] = run_end
 
 def burn():
-    run_command(f"pyocd flash {BUILD_DIR}/temp.elf -t apm32f103c8 --pack pack/Geehy.APM32F1xx_DFP.1.1.0.pack")
+    run_command(f"pyocd flash {BUILD_DIR}/{RUN_TARGET} -t apm32f103c8 --pack ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack")
 rules["burn"] = burn
 
 def erase():
-    run_command(f"pyocd erase -t apm32f103c8 --chip --pack pack/Geehy.APM32F1xx_DFP.1.1.0.pack")
+    run_command(f"pyocd erase -t apm32f103c8 --chip --pack ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack")
 rules["erase"] = erase
 
 def full_run():

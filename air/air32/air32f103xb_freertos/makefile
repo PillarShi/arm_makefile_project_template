@@ -173,7 +173,7 @@ $(BUILD):
 	@mkdir $@
 ################################ 烧录规则 #####################################
 NAME := air32f103xb
-PACK := ./pack/Keil.AIR32F103_DFP.1.1.9.pack
+PACK := ../pack/Keil.AIR32F103_DFP.1.1.9.pack
 # BASE_ADDR := 0x08000000
 
 .PHONY: pack burn erase
