@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_BUILD_TYPE MinSizeRel)
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_SYSTEM_NAME Generic) # 目标系统 Windows Linux Android 嵌入式-Generic 等
+set(CMAKE_SYSTEM_NAME ) # 目标系统 Windows Linux Android 等 嵌入式(裸机/RTOS)-可不设
 set(CMAKE_SYSTEM_PROCESSOR arm) # 目标系统的处理器架构
 set(CMAKE_CXX_STANDARD  17)
 set(CMAKE_C_STANDARD    99)
@@ -47,10 +47,10 @@ add_custom_target(RUN_POST_BUILD ALL
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     message(STATUS "Maximum optimization for speed")
-    set(BUILD_FLAGS -Of)
+    set(BUILD_FLAGS -Ofast)
 elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
     message(STATUS "Maximum optimization for speed, debug info included")
-    set(BUILD_FLAGS -Of -g -gdwarf-2)
+    set(BUILD_FLAGS -Ofast -g -gdwarf-2)
 elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
     message(STATUS "Maximum optimization for size")
     set(BUILD_FLAGS -Os)
