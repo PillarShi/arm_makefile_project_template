@@ -2,14 +2,17 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_BUILD_TYPE MinSizeRel)
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR arm)
+set(CMAKE_SYSTEM_NAME Generic) # 目标系统 Windows Linux Android 嵌入式-Generic 等
+set(CMAKE_SYSTEM_PROCESSOR arm) # 目标系统的处理器架构
 set(CMAKE_CXX_STANDARD  17)
 set(CMAKE_C_STANDARD    99)
 
-project(temp
+project(morden_cmake_project
         VERSION 0.0.1
-        LANGUAGES CXX C ASM)
+        LANGUAGES CXX C ASM
+        ) # project message
+
+set(REAL_CMAKE_DIR bsp) # 进入正真构建cmake的目录
 
 set(ELF_FILE ${PROJECT_NAME}.elf)
 set(HEX_FILE ${PROJECT_NAME}.hex)
@@ -18,11 +21,10 @@ set(MAP_FILE ${PROJECT_NAME}.map)
 set(DIS_FILE ${PROJECT_NAME}.dis)
 
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/lib/startup/my_gcc_APM32F10xx6.ld)
-
 ################################ DO NOT CHANGE ###############################
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}) # 可执行文件生产目录重定义
 set(TARGET ${ELF_FILE})
 #----------------------------------- GCC -------------------------------------
 set(CC_PREFIX arm-none-eabi-)
@@ -39,7 +41,9 @@ add_custom_target(RUN_POST_BUILD ALL
     COMMAND ${CMAKE_OBJCOPY} -Obinary ${TARGET} ${BIN_FILE}
     COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${TARGET} > ${DIS_FILE}
     COMMAND ${CMAKE_SIZE} ${TARGET}
-    )
+    DEPENDS ${TARGET}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    ) # 总是在 ${TARGET} 后执行
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     message(STATUS "Maximum optimization for speed")
@@ -67,25 +71,25 @@ set(COMMON_FLAGS
 set(C_FLAGS
     ${COMMON_FLAGS} ${BUILD_FLAGS}
     -fomit-frame-pointer -Wall
-    )
+    ) # C 编译选项
 
 set(ASM_FLAGS
     ${COMMON_FLAGS} ${BUILD_FLAGS}
     -x assembler-with-cpp -Wa,-mimplicit-it=thumb
-    )
+    ) # 汇编 编译选项
 
 set(CXX_FLAGS
     ${COMMON_FLAGS} ${BUILD_FLAGS}
     -fomit-frame-pointer -Wall
     -fno-exceptions -fno-rtti -fno-threadsafe-statics -fvisibility=hidden
-    )
+    ) # C++ 编译选项
 
 set(LD_FLAGS 
     ${COMMON_FLAGS}
     -specs=nano.specs -specs=nosys.specs
     -Wl,--gc-sections,-cref,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MAP_FILE}
     -T${LINKER_SCRIPT}
-    )
+    ) # 链接选项
 #-----------------------------------------------------------------------------
-add_subdirectory(bsp)
+add_subdirectory(${REAL_CMAKE_DIR}) # 进入正真构建cmake
 ##############################################################################
