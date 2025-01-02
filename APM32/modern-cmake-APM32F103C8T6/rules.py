@@ -19,7 +19,10 @@ def gen():
         run_command(f"cmake -B {BUILD_DIR} -S {SRC_DIR} -GNinja")
     else:
         verbose = "ON" if IS_VERBOSE else "OFF"
-        run_command(f"cmake -B {BUILD_DIR} -S {SRC_DIR} -DCMAKE_VERBOSE_MAKEFILE={verbose}")
+        if os.name == 'nt':  # 'nt'表示Windows系统
+            run_command(f"cmake -B {BUILD_DIR} -S {SRC_DIR} -G \"MinGW Makefiles\" -DCMAKE_VERBOSE_MAKEFILE={verbose}")
+        else:
+            run_command(f"cmake -B {BUILD_DIR} -S {SRC_DIR} -DCMAKE_VERBOSE_MAKEFILE={verbose}")
 rules["gen"] = gen
 
 def build():

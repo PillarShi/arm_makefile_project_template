@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_BUILD_TYPE MinSizeRel)
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_SYSTEM_NAME ) # 目标系统 Windows Linux Android 等 嵌入式(裸机/RTOS)-可不设
+set(CMAKE_SYSTEM_NAME Generic) # 目标系统 Windows Linux Android 等 嵌入式(裸机/RTOS)-Generic
 set(CMAKE_SYSTEM_PROCESSOR arm) # 目标系统的处理器架构
 set(CMAKE_CXX_STANDARD  17)
 set(CMAKE_C_STANDARD    99)
