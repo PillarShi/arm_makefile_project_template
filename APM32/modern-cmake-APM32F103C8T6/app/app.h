@@ -1,6 +1,6 @@
-#ifndef _APP_H
-#define _APP_H
+#ifndef _APP_H_
+#define _APP_H_
 
-#include "led.h"
+void app(void);
 
 #endif

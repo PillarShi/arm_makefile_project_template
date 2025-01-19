@@ -1,22 +1,18 @@
-set(TARGET lib)
+set(TARGET board)
 
 SET(SRC
-    system_apm32f10x.c
-    driver/src/apm32f10x_rcm.c
-    driver/src/apm32f10x_gpio.c
-    driver/src/apm32f10x_usart.c
-    driver/src/apm32f10x_dma.c
-    driver/src/apm32f10x_misc.c
-    startup/my_startup_apm32f10x_md.S
+    system.c
+    apm32f10x_int.c
+    led.c
     )
 
 set(INC_DIR
     .
-    CMSIS
-    driver/inc
+    led
     )
 
 set(LIB
+    lib
     )
 
 set(DEFINES
@@ -38,7 +34,7 @@ if (SUB_DIRS) # 存在子目录作为组成
     target_link_libraries(${TARGET} PUBLIC ${SUB_DIRS}) # 作为组成所以PUBLIC
 endif()
 
-target_link_libraries(${TARGET} PRIVATE ${LIB})  # 其他库和组
+target_link_libraries(${TARGET} PRIVATE ${LIB}) # 其他库和组
 
 target_compile_definitions(${TARGET} PRIVATE ${DEFINES})
 target_compile_options(${TARGET} PRIVATE $<$<COMPILE_LANGUAGE:C>:${C_FLAGS}>)

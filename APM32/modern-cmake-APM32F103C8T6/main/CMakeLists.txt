@@ -2,7 +2,6 @@ set(TARGET ${TARGET})
 
 set(SRC
     main.c
-    apm32f10x_int.c
     )
 
 set(INC_DIR
@@ -18,6 +17,7 @@ set(DEFINES
 
 set(SUB_DIRS_NOT_REAL 
     lib
+    board
     app
     ) # 不是子目录，而是其他组
 ################################ DO NOT CHANGE ###############################

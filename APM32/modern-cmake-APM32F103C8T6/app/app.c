@@ -1,14 +1,9 @@
-#include "system.h"
 #include "app.h"
+#include "led.h"
+#include "system.h"
 
-
-
-int main(void)
+void app()
 {
-    system_init();
-    LOG_INIT(115200);
-    led_init();
-    LOG("Loop Start!!!\r\n");
     while (1)
     {
         delay_ms(500);

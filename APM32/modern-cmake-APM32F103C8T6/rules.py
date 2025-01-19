@@ -3,6 +3,7 @@ import os,sys,shutil
 RUN_TARGET = "morden_cmake_project.elf"
 SRC_DIR = "."
 BUILD_DIR = "build"
+OUTPUT_DIR = "out"
 
 IS_NINJA = False
 IS_VERBOSE = False
@@ -33,6 +34,19 @@ def run():
     run_command(f"./{BUILD_DIR}/{RUN_TARGET}")
 rules["run"] = run
 
+def full_run():
+    gen()
+    build()
+    print("-------------------------------- RUN TARGET --------------------------------")
+    run()
+    print("----------------------------------------------------------------------------")
+rules["full_run"] = full_run
+
+def only_build():
+    gen()
+    build()
+rules["only_build"] = only_build
+
 def clean():
     if os.path.exists(BUILD_DIR):
         shutil.rmtree(BUILD_DIR)
@@ -40,13 +54,14 @@ def clean():
         print(f"clean {BUILD_DIR}")
 rules["clean"] = clean
 
-def run_begin():
-    print("-------------------------------- RUN TARGET --------------------------------")
-rules["run_begin"] = run_begin
-
-def run_end():
-    print("----------------------------------------------------------------------------")
-rules["run_end"] = run_end
+def clean_all():
+    if os.path.exists(BUILD_DIR):
+        shutil.rmtree(BUILD_DIR)
+    if os.path.exists(OUTPUT_DIR):
+        shutil.rmtree(OUTPUT_DIR)
+    if SHOW_COMMAND:
+        print(f"clean {BUILD_DIR} {OUTPUT_DIR}")
+rules["clean_all"] = clean_all
 
 def burn():
     run_command(f"pyocd flash {BUILD_DIR}/{RUN_TARGET} -t apm32f103c8 --pack ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack")
@@ -55,18 +70,6 @@ rules["burn"] = burn
 def erase():
     run_command(f"pyocd erase -t apm32f103c8 --chip --pack ../pack/Geehy.APM32F1xx_DFP.1.1.0.pack")
 rules["erase"] = erase
-
-def full_run():
-    only_build()
-    run_begin()
-    run_program()
-    run_end()
-rules["full_run"] = full_run
-
-def only_build():
-    gen()
-    build()
-rules["only_build"] = only_build
 ##############################################################################
 
 def run_command(command):

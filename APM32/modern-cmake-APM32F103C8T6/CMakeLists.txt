@@ -12,7 +12,7 @@ project(morden_cmake_project
         LANGUAGES CXX C ASM
         ) # project message
 
-set(REAL_CMAKE_DIR bsp) # 进入正真构建cmake的目录
+set(REAL_CMAKE_DIR main) # 进入正真构建cmake的目录
 
 set(ELF_FILE ${PROJECT_NAME}.elf)
 set(HEX_FILE ${PROJECT_NAME}.hex)
@@ -21,10 +21,10 @@ set(MAP_FILE ${PROJECT_NAME}.map)
 set(DIS_FILE ${PROJECT_NAME}.dis)
 
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/lib/startup/my_gcc_APM32F10xx6.ld)
-################################ DO NOT CHANGE ###############################
+################################ BUILD SETTING ###############################
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}) # 可执行文件生产目录重定义
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../out) # 可执行文件生产目录重定义
 set(TARGET ${ELF_FILE})
 #----------------------------------- GCC -------------------------------------
 set(CC_PREFIX arm-none-eabi-)
@@ -42,7 +42,7 @@ add_custom_target(RUN_POST_BUILD ALL
     COMMAND ${CMAKE_OBJDUMP} -p -D -h -m arm ${TARGET} > ${DIS_FILE}
     COMMAND ${CMAKE_SIZE} ${TARGET}
     DEPENDS ${TARGET}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     ) # 总是在 ${TARGET} 后执行
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")

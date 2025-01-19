@@ -1,6 +1,5 @@
 #include "apm32f10x_int.h"
 #include "system.h"
-#include "app.h"
 
 void NMI_Handler(void)
 {

@@ -1,16 +1,16 @@
 set(TARGET app)
 
-SET(SRC 
-    led/led.c
+SET(SRC
+    app.c
     )
 
 set(INC_DIR
     .
-    led
     )
 
 set(LIB
     lib
+    board
     )
 
 set(DEFINES
@@ -26,7 +26,7 @@ target_include_directories(${TARGET} PUBLIC ${INC_DIR})
 
 if (SUB_DIRS) # 存在子目录作为组成
     foreach(SUB_DIR ${SUB_DIRS})
-        add_subdirectory(../${SUB_DIR} ../${SUB_DIR})
+        add_subdirectory(${SUB_DIR})
     endforeach()
     add_dependencies(${TARGET} ${SUB_DIRS})
     target_link_libraries(${TARGET} PUBLIC ${SUB_DIRS}) # 作为组成所以PUBLIC
